@@ -116,10 +116,20 @@ impl KaHyParHyperGraph {
         num_hyperedges: u32,
         hyperedge_indices: &[usize],
         hyperedges: &[u32],
-        hyperedge_weights: &[i32],
-        vertex_weights: &[i32],
+        hyperedge_weights: Option<Vec<i32>>,
+        vertex_weights: Option<Vec<i32>>,
     ) -> Self {
         unsafe {
+            let hyperedge_weights = if let Some(weights) = hyperedge_weights {
+                weights
+            } else {
+                vec![0; num_hyperedges as usize]
+            };
+            let vertex_weights = if let Some(weights) = vertex_weights {
+                weights
+            } else {
+                vec![0; num_hyperedges as usize]
+            };
             Self {
                 hypergraph: NonNull::new(kahypar_create_hypergraph(
                     num_blocks,
