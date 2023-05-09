@@ -22,12 +22,6 @@ pub struct KaHyParHyperGraph {
 
 impl KaHyParContext {
     /// Creates a new blank context.
-    /// # Examples
-    ///
-    /// ```
-    /// # use kahypar_sys::KaHyParContext;
-    /// let context = KaHyParContext::new();
-    /// ```
     #[must_use]
     pub fn new() -> Self {
         unsafe {
@@ -48,13 +42,6 @@ impl KaHyParContext {
     }
 
     /// Set seed for non-deterministic partitioning.
-    ///
-    ///# Examples
-    /// ```
-    /// # use kahypar_sys::KaHyParContext;
-    /// let mut context = KaHyParContext::new();
-    /// context.set_seed(43);
-    /// ```
     pub fn set_seed(&mut self, seed: i32) {
         unsafe {
             kahypar_set_seed(self.context.as_mut(), seed);
@@ -88,27 +75,6 @@ impl KaHyParHyperGraph {
     /// * `hyperedges` - A Vector of integers, indexed by `hyperedge_indices`
     /// * `hyperedge_weights` - A Vector of integers of `len(hyperedge_indices)-1`, provides integer weight to each hyperedge
     /// * `vertex_weights`- A Vector of integers of `len(num_vertices)`, provides integer weight to each node
-    /// Set seed for non-deterministic partitioning.
-    ///
-    ///# Examples
-    /// ```
-    /// # use kahypar_sys::KaHyParContext;
-    /// # use kahypar_sys::KaHyParHyperGraph;
-    /// let mut context = KaHyParContext::new();
-    /// let num_blocks = 1;
-    /// let num_vertices = 7; let num_hyperedges = 4;
-    /// let hyperedge_indices = &[0,2,6,9,12];
-    /// let hyperedges = &[0,2,0,1,3,4,3,4,6,2,5,6];
-    /// let vertex_weights = &[1,2,3,4,5,6,7];
-    /// let hyperedge_weights = &[11,22,33,44];
-    /// let hypergraph = KaHyParHyperGraph::new(num_blocks,
-    /// num_vertices,
-    /// num_hyperedges,
-    /// hyperedge_indices,
-    /// hyperedges,
-    /// hyperedge_weights,
-    /// vertex_weights,);
-    /// ```
     #[must_use]
     pub fn new(
         num_blocks: i32,
@@ -202,12 +168,12 @@ pub fn partition(
     let vertex_weights = if let Some(weights) = vertex_weights {
         weights
     } else {
-        Vec::with_capacity(0)
+        vec![0; num_vertices as usize]
     };
     let hyperedge_weights = if let Some(weights) = hyperedge_weights {
         weights
     } else {
-        Vec::with_capacity(0)
+        vec![0; num_hyperedges as usize]
     };
 
     unsafe {
@@ -230,6 +196,37 @@ pub fn partition(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_context_init() {
+        let context = KaHyParContext::new();
+    }
+
+    #[test]
+    fn test_set_seed() {
+        let mut context = KaHyParContext::new();
+        context.set_seed(43);
+    }
+
+    #[test]
+    fn test_hypergraph_init() {
+        let num_blocks = 1;
+        let num_vertices = 7;
+        let num_hyperedges = 4;
+        let hyperedge_indices = &[0, 2, 6, 9, 12];
+        let hyperedges = &[0, 2, 0, 1, 3, 4, 3, 4, 6, 2, 5, 6];
+        let vertex_weights = vec![1, 2, 3, 4, 5, 6, 7];
+        let hyperedge_weights = vec![11, 22, 33, 44];
+        KaHyParHyperGraph::new(
+            num_blocks,
+            num_vertices,
+            num_hyperedges,
+            hyperedge_indices,
+            hyperedges,
+            Some(hyperedge_weights),
+            Some(vertex_weights),
+        );
+    }
 
     #[test]
     fn test_partition() {
@@ -266,5 +263,7 @@ mod tests {
             &mut context,
             &mut partitioning,
         );
+
+        assert_eq!(partitioning, [1, 1, 0, 0, 1]);
     }
 }
