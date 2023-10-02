@@ -32,12 +32,14 @@ impl KaHyParContext {
     }
 
     /// Configures KaHyParContext object via input file
-    pub fn configure(&mut self, config_file: String) {
+    pub fn configure(&mut self, config_file: Option<String>) {
+        let config = if let Some(config) = config_file {
+            config
+        } else {
+            "./kahypar/config/km1_kKaHyPar_sea20.ini".to_owned()
+        };
         unsafe {
-            kahypar_configure_context_from_file(
-                self.context.as_ptr(),
-                config_file.as_ptr() as *mut i8,
-            )
+            kahypar_configure_context_from_file(self.context.as_ptr(), config.as_ptr() as *mut i8)
         }
     }
 
@@ -229,11 +231,17 @@ mod tests {
     }
 
     #[test]
+    fn test_context_config() {
+        let mut context = KaHyParContext::new();
+        context.configure(None);
+    }
+
+    #[test]
     fn test_partition() {
         let mut context = KaHyParContext::new();
-        context.configure(std::string::String::from(
+        context.configure(Some(std::string::String::from(
             "src/tests/km1_kKaHyPar_sea20.ini",
-        ));
+        )));
         let num_vertices = 7;
         let num_hyperedges = 4;
 
