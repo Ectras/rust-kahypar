@@ -168,12 +168,22 @@ pub fn partition(
     let vertex_weights = if let Some(weights) = vertex_weights {
         weights
     } else {
-        vec![0; num_vertices as usize]
+        vec![]
     };
     let hyperedge_weights = if let Some(weights) = hyperedge_weights {
         weights
     } else {
-        vec![0; num_hyperedges as usize]
+        vec![]
+    };
+    let vweights = if vertex_weights.is_empty() {
+        std::ptr::null()
+    } else {
+        vertex_weights.as_ptr()
+    };
+    let hweights = if hyperedge_weights.is_empty() {
+        std::ptr::null()
+    } else {
+        hyperedge_weights.as_ptr()
     };
 
     unsafe {
@@ -182,8 +192,8 @@ pub fn partition(
             num_hyperedges,
             imbalance,
             k,
-            vertex_weights.as_ptr(),
-            hyperedge_weights.as_ptr(),
+            vweights,
+            hweights,
             hyperedge_indices.as_ptr(),
             hyperedges.as_ptr(),
             objective,
@@ -199,7 +209,7 @@ mod tests {
 
     #[test]
     fn test_context_init() {
-        let context = KaHyParContext::new();
+        let _context = KaHyParContext::new();
     }
 
     #[test]
@@ -217,7 +227,7 @@ mod tests {
         let hyperedges = &[0, 2, 0, 1, 3, 4, 3, 4, 6, 2, 5, 6];
         let vertex_weights = vec![1, 2, 3, 4, 5, 6, 7];
         let hyperedge_weights = vec![11, 22, 33, 44];
-        KaHyParHyperGraph::new(
+        let _ = KaHyParHyperGraph::new(
             num_blocks,
             num_vertices,
             num_hyperedges,
