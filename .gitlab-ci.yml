@@ -95,11 +95,6 @@ build:
   # Build the project
   - cargo build -vv --color always
 
-  artifacts:
-    paths:
-    - target/debug
-    expire_in: 1 hour
-
 build:docs:
   stage: main
   extends: .rust-default
