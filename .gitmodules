@@ -1,3 +1,5 @@
 [submodule "kahypar"]
 	path = kahypar
 	url = https://github.com/kahypar/kahypar
+[submodule "."]
+	url = git@github.com:keefehuang/kahypar.git
