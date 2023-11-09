@@ -12,6 +12,7 @@ fn main() {
     // Link it
     println!("cargo:rustc-link-search={}", dst.join("lib").display());
     println!("cargo:rustc-link-lib=kahypar");
+    println!("cargo:rustc-link-lib=boost_program_options");
     println!("cargo:rustc-link-lib=stdc++");
 
     // Generate bindings
