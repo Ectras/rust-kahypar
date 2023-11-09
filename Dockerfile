@@ -12,4 +12,4 @@ RUN apt-get update -qq && \
     ./rustup-init.sh -y --default-toolchain none  --no-modify-path && \
     rustup show && \
     apt-get install -qq --no-install-recommends apt-utils && \
-    apt-get install -qq build-essential clang cmake gfortran libopenblas-dev libssl-dev libhdf5-dev pkg-config libboost-all-dev git
+    apt-get install -qq build-essential clang cmake gfortran libopenblas-dev libssl-dev libhdf5-dev pkg-config libboost-program-options-dev git
