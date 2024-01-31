@@ -1,3 +1,4 @@
+use std::ffi::CString;
 use std::ptr::NonNull;
 #[allow(non_camel_case_types)]
 mod kahypar {
@@ -32,13 +33,8 @@ impl KaHyParContext {
     }
 
     /// Configures KaHyParContext object via input file
-    pub fn configure(&mut self, config_file: String) {
-        unsafe {
-            kahypar_configure_context_from_file(
-                self.context.as_ptr(),
-                config_file.as_ptr() as *mut i8,
-            )
-        }
+    pub fn configure(&mut self, config_file: CString) {
+        unsafe { kahypar_configure_context_from_file(self.context.as_ptr(), config_file.as_ptr()) }
     }
 
     /// Set seed for non-deterministic partitioning.
@@ -241,9 +237,9 @@ mod tests {
     #[test]
     fn test_partition() {
         let mut context = KaHyParContext::new();
-        context.configure(std::string::String::from(
-            "src/tests/km1_kKaHyPar_sea20.ini",
-        ));
+        context.configure(
+            CString::new("src/tests/km1_kKaHyPar_sea20.ini").expect("CString::new failed"),
+        );
         let num_vertices = 7;
         let num_hyperedges = 4;
 
