@@ -8,6 +8,7 @@ license = "MIT"
 repository = "https://gitlab.lrz.de/quantum-research/kahypar-sys"
 keywords = ["kahypar", "hypergraph partitioning"]
 categories = ["api-bindings", "science"]
+links = "kahypar"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
