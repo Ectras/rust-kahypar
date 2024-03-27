@@ -11,6 +11,7 @@ fn main() {
 
     // Link it
     println!("cargo:rustc-link-search={}", dst.join("lib").display());
+    println!("cargo:rustc-link-search={}", dst.join("lib64").display());
     println!("cargo:rustc-link-lib=kahypar");
     println!("cargo:rustc-link-lib=boost_program_options");
     println!("cargo:rustc-link-lib=stdc++");
@@ -23,7 +24,8 @@ fn main() {
         .generate()
         .expect("Unable to generate bindings");
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let bind_path = out_path.join("bindings.rs");
     bindings
-        .write_to_file(out_path.join("bindings.rs"))
+        .write_to_file(bind_path)
         .unwrap_or_else(|_| panic!("Unable to write bindings to {}", out_path.to_str().unwrap()));
 }
