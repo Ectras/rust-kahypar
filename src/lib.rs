@@ -1,6 +1,7 @@
 use std::ffi::CString;
 use std::ptr::NonNull;
-#[allow(non_camel_case_types)]
+
+#[allow(non_camel_case_types, dead_code, non_upper_case_globals)]
 mod kahypar {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }
