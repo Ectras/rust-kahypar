@@ -7,9 +7,10 @@ mod kahypar {
 }
 
 use crate::kahypar::{
-    kahypar_configure_context_from_file, kahypar_context_free, kahypar_context_new,
-    kahypar_context_t, kahypar_create_hypergraph, kahypar_hypergraph_free, kahypar_hypergraph_t,
-    kahypar_partition, kahypar_partition_hypergraph, kahypar_set_seed,
+    kahypar_configure_context_from_file, kahypar_configure_context_from_string,
+    kahypar_context_free, kahypar_context_new, kahypar_context_t, kahypar_create_hypergraph,
+    kahypar_hypergraph_free, kahypar_hypergraph_t, kahypar_partition, kahypar_partition_hypergraph,
+    kahypar_set_seed,
 };
 
 /// Wrapper for KaHyPar hypegraph context object
@@ -33,9 +34,16 @@ impl KaHyParContext {
         }
     }
 
-    /// Configures KaHyParContext object via input file
-    pub fn configure(&mut self, config_file: CString) {
+    /// Configures KaHyParContext object via input file.
+    pub fn configure_from_file(&mut self, config_file: CString) {
         unsafe { kahypar_configure_context_from_file(self.context.as_ptr(), config_file.as_ptr()) }
+    }
+
+    /// Configures KaHyParContext object via input string.
+    pub fn configure_from_str(&mut self, config_string: CString) {
+        unsafe {
+            kahypar_configure_context_from_string(self.context.as_ptr(), config_string.as_ptr())
+        }
     }
 
     /// Set seed for non-deterministic partitioning.
@@ -216,6 +224,20 @@ mod tests {
     }
 
     #[test]
+    fn test_context_init_file() {
+        let mut context = KaHyParContext::new();
+        context.configure_from_file(CString::new("src/tests/km1_kKaHyPar_sea20.ini").unwrap());
+    }
+
+    #[test]
+    fn test_context_init_str() {
+        let mut context = KaHyParContext::new();
+        context.configure_from_str(
+            CString::new(include_str!("tests/km1_kKaHyPar_sea20.ini")).unwrap(),
+        );
+    }
+
+    #[test]
     fn test_hypergraph_init() {
         let num_blocks = 1;
         let num_vertices = 7;
@@ -238,9 +260,7 @@ mod tests {
     #[test]
     fn test_partition() {
         let mut context = KaHyParContext::new();
-        context.configure(
-            CString::new("src/tests/km1_kKaHyPar_sea20.ini").expect("CString::new failed"),
-        );
+        context.configure_from_file(CString::new("src/tests/km1_kKaHyPar_sea20.ini").unwrap());
         let num_vertices = 7;
         let num_hyperedges = 4;
 
