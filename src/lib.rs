@@ -49,7 +49,7 @@ impl KaHyParContext {
     /// Set seed for non-deterministic partitioning.
     pub fn set_seed(&mut self, seed: i32) {
         unsafe {
-            kahypar_set_seed(self.context.as_mut(), seed);
+            kahypar_set_seed(self.context.as_ptr(), seed);
         }
     }
 }
@@ -137,11 +137,11 @@ impl KaHyParHyperGraph {
     ) {
         unsafe {
             kahypar_partition_hypergraph(
-                self.hypergraph.as_mut(),
+                self.hypergraph.as_ptr(),
                 num_blocks,
                 epsilon,
                 objective,
-                kahypar_context.context.as_mut(),
+                kahypar_context.context.as_ptr(),
                 partition.as_mut_ptr(),
             )
         }
@@ -202,7 +202,7 @@ pub fn partition(
             hyperedge_indices.as_ptr(),
             hyperedges.as_ptr(),
             objective,
-            context.context.as_mut(),
+            context.context.as_ptr(),
             partition.as_mut_ptr(),
         )
     }
