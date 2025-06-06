@@ -1,4 +1,4 @@
-FROM ubuntu:23.04
+FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND="noninteractive" \
     PATH="/root/.cargo/bin:${PATH}"
 COPY rust-toolchain.toml .
@@ -13,7 +13,7 @@ RUN apt-get update && \
     # 4. Install dependencies for the project
     apt-get install -y clang cmake libboost-program-options-dev libssl-dev pkg-config && \
     # 5. Clear intermediate files
-    apt-get clean
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY Cargo.toml Cargo.lock tmp/
 ARG SSH_PRIVATE_KEY
 RUN --mount=type=ssh \
@@ -23,7 +23,7 @@ RUN --mount=type=ssh \
     mv -f tmp/Cargo.toml tmp/Cargo.lock rust-toolchain.toml dummy && \
     cd dummy && \
     # 1.2 Need to create some dummy files as well
-    mkdir benches && touch benches/benchmarks.rs && touch build.rs && \
+    touch build.rs && \
     # 1.3 Set up SSH access to Gitlab
     mkdir -p -m 0700 ~/.ssh && \
     ssh-keyscan -H gitlab.lrz.de >> ~/.ssh/known_hosts && \
