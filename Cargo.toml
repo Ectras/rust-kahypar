@@ -5,8 +5,8 @@ edition = "2021"
 readme = "Readme.md"
 description = "A wrapper to the C++ interface of KaHyPar (Karlsruhe Hypergraph Partitionining) library."
 license = "MIT"
-repository = "https://gitlab.lrz.de/quantum-research/kahypar-sys"
-keywords = ["kahypar", "hypergraph partitioning"]
+repository = "https://github.com/Ectras/rust-kahypar.git"
+keywords = ["kahypar", "hypergraph", "partitioning"]
 categories = ["api-bindings", "science"]
 links = "kahypar"
 
