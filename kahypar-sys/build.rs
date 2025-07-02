@@ -3,7 +3,7 @@ use std::{env, path::PathBuf};
 
 fn main() {
     // Build kahypar
-    let dst = Config::new("kahypar")
+    let dst = Config::new("extern/kahypar")
         .configure_arg("-DBUILD_TESTING=False")
         .configure_arg("-DBUILD_SHARED_LIBS=False")
         .profile("Release")
@@ -17,7 +17,7 @@ fn main() {
     println!("cargo:rustc-link-lib=stdc++");
 
     // Generate bindings
-    let header = "kahypar/include/libkahypar.h";
+    let header = "extern/kahypar/include/libkahypar.h";
     println!("cargo:rerun-if-changed={header}");
     let bindings = bindgen::Builder::default()
         .header(header)
