@@ -1,5 +1,5 @@
-use std::ffi::CString;
 use std::ptr::NonNull;
+use std::{ffi::CString, ptr};
 
 use kahypar_sys::{
     kahypar_configure_context_from_file, kahypar_configure_context_from_string,
@@ -161,12 +161,12 @@ pub fn partition(
     let vweights = if !vertex_weights.is_empty() {
         vertex_weights.as_ptr()
     } else {
-        Default::default()
+        ptr::null()
     };
     let hweights = if !hyperedge_weights.is_empty() {
         hyperedge_weights.as_ptr()
     } else {
-        Default::default()
+        ptr::null()
     };
 
     unsafe {
