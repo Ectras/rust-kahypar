@@ -86,7 +86,8 @@ impl KaHyParHyperGraph {
         vertex_weights: Option<Vec<i32>>,
     ) -> Self {
         unsafe {
-            let hyperedge_weights = hyperedge_weights.unwrap_or_else(|| vec![0; num_hyperedges as usize]);
+            let hyperedge_weights =
+                hyperedge_weights.unwrap_or_else(|| vec![0; num_hyperedges as usize]);
             let vertex_weights = vertex_weights.unwrap_or_else(|| vec![0; num_hyperedges as usize]);
             Self {
                 hypergraph: NonNull::new(kahypar_create_hypergraph(
@@ -157,8 +158,16 @@ pub fn partition(
 ) {
     let vertex_weights = vertex_weights.unwrap_or_default();
     let hyperedge_weights = hyperedge_weights.unwrap_or_default();
-    let vweights = if !vertex_weights.is_empty() { vertex_weights.as_ptr() } else { Default::default() };
-    let hweights = if !hyperedge_weights.is_empty() { hyperedge_weights.as_ptr() } else { Default::default() };
+    let vweights = if !vertex_weights.is_empty() {
+        vertex_weights.as_ptr()
+    } else {
+        Default::default()
+    };
+    let hweights = if !hyperedge_weights.is_empty() {
+        hyperedge_weights.as_ptr()
+    } else {
+        Default::default()
+    };
 
     unsafe {
         kahypar_partition(
@@ -195,7 +204,13 @@ mod tests {
     #[test]
     fn test_context_init_file() {
         let mut context = KaHyParContext::new();
-        context.configure_from_file(CString::new(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/km1_kKaHyPar_sea20.ini")).unwrap());
+        context.configure_from_file(
+            CString::new(concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/tests/km1_kKaHyPar_sea20.ini"
+            ))
+            .unwrap(),
+        );
     }
 
     #[test]
@@ -229,7 +244,13 @@ mod tests {
     #[test]
     fn test_partition() {
         let mut context = KaHyParContext::new();
-        context.configure_from_file(CString::new(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/km1_kKaHyPar_sea20.ini")).unwrap());
+        context.configure_from_file(
+            CString::new(concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/tests/km1_kKaHyPar_sea20.ini"
+            ))
+            .unwrap(),
+        );
         let num_vertices = 7;
         let num_hyperedges = 4;
 
