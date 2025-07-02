@@ -121,6 +121,9 @@ dependencies = [
 [[package]]
 name = "kahypar"
 version = "0.1.0"
+dependencies = [
+ "kahypar-sys",
+]
 
 [[package]]
 name = "kahypar-sys"

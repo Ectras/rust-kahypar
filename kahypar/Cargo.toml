@@ -2,5 +2,13 @@
 name = "kahypar"
 version = "0.1.0"
 edition = "2021"
+readme = "Readme.md"
+description = "Low-level bindings to the C interface of the KaHyPar (Karlsruhe Hypergraph Partitionining) library."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Ectras/rust-kahypar.git"
+keywords = ["kahypar", "hypergraph", "partitioning"]
+categories = ["api-bindings", "science", "algorithms"]
+rust-version = "1.79.0"
 
 [dependencies]
+kahypar-sys = { version = "0.1.0", path = "../kahypar-sys" }
