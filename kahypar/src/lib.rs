@@ -8,12 +8,12 @@ use kahypar_sys::{
     kahypar_set_seed,
 };
 
-/// Wrapper for KaHyPar hypegraph context object
+/// Wrapper for KaHyPar hypergraph context object.
 pub struct KaHyParContext {
     context: NonNull<kahypar_context_t>,
 }
 
-/// Wrapper for KaHyPar hypegraph object
+/// Wrapper for KaHyPar hypergraph object.
 pub struct KaHyParHyperGraph {
     hypergraph: NonNull<kahypar_hypergraph_t>,
 }
@@ -111,17 +111,15 @@ impl KaHyParHyperGraph {
         }
     }
 
-    /// Creates a new KaHyPar HyperGraph object.
+    /// Partitions the hypergraph.
     ///
     /// # Arguments
     ///
-    /// * `num_blocks` - Number of nodes in hypergraph
-    /// * `num_vertices` - Number of vertices in hypergraph
-    /// * `num_hyperedges` - Number of hyperedges in hypergraph
-    /// * `hyperedge_indices` - A Vector of integers, used to index `hyperedges` to determine number of nodes for each hyperedge
-    /// * `hyperedges` - A Vector of integers, indexed by `hyperedge_indices`
-    /// * `hyperedge_weights` - A Vector of integers of `len(hyperedge_indices)-1`, provides integer weight to each hyperedge
-    /// * `vertex_weights`- A Vector of integers of `len(num_vertices)`, provides integer weight to each node
+    /// * `num_blocks` - Number of partitions to create
+    /// * `epsilon` - Imbalance parameter (= tolerance for size differences between partitions)
+    /// * `objective` - the objective to use
+    /// * `kahypar_context` - the context to use
+    /// * `partition` - The output vector, matching in length with the total number of elements
     pub fn partition(
         &mut self,
         num_blocks: i32,
