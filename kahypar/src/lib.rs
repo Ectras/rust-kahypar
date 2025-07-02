@@ -86,16 +86,8 @@ impl KaHyParHyperGraph {
         vertex_weights: Option<Vec<i32>>,
     ) -> Self {
         unsafe {
-            let hyperedge_weights = if let Some(weights) = hyperedge_weights {
-                weights
-            } else {
-                vec![0; num_hyperedges as usize]
-            };
-            let vertex_weights = if let Some(weights) = vertex_weights {
-                weights
-            } else {
-                vec![0; num_hyperedges as usize]
-            };
+            let hyperedge_weights = hyperedge_weights.unwrap_or_else(|| vec![0; num_hyperedges as usize]);
+            let vertex_weights = vertex_weights.unwrap_or_else(|| vec![0; num_hyperedges as usize]);
             Self {
                 hypergraph: NonNull::new(kahypar_create_hypergraph(
                     num_blocks,
@@ -163,26 +155,10 @@ pub fn partition(
     context: &mut KaHyParContext,
     partition: &mut [i32],
 ) {
-    let vertex_weights = if let Some(weights) = vertex_weights {
-        weights
-    } else {
-        vec![]
-    };
-    let hyperedge_weights = if let Some(weights) = hyperedge_weights {
-        weights
-    } else {
-        vec![]
-    };
-    let vweights = if vertex_weights.is_empty() {
-        std::ptr::null()
-    } else {
-        vertex_weights.as_ptr()
-    };
-    let hweights = if hyperedge_weights.is_empty() {
-        std::ptr::null()
-    } else {
-        hyperedge_weights.as_ptr()
-    };
+    let vertex_weights = vertex_weights.unwrap_or_default();
+    let hyperedge_weights = hyperedge_weights.unwrap_or_default();
+    let vweights = if !vertex_weights.is_empty() { vertex_weights.as_ptr() } else { Default::default() };
+    let hweights = if !hyperedge_weights.is_empty() { hyperedge_weights.as_ptr() } else { Default::default() };
 
     unsafe {
         kahypar_partition(
