@@ -1,5 +1,6 @@
+use std::ffi::CStr;
+use std::ptr;
 use std::ptr::NonNull;
-use std::{ffi::CString, ptr};
 
 use kahypar_sys::{
     kahypar_configure_context_from_file, kahypar_configure_context_from_string,
@@ -30,12 +31,12 @@ impl KaHyParContext {
     }
 
     /// Configures KaHyParContext object via input file.
-    pub fn configure_from_file(&mut self, config_file: CString) {
+    pub fn configure_from_file(&mut self, config_file: &CStr) {
         unsafe { kahypar_configure_context_from_file(self.context.as_ptr(), config_file.as_ptr()) }
     }
 
     /// Configures KaHyParContext object via input string.
-    pub fn configure_from_str(&mut self, config_string: CString) {
+    pub fn configure_from_str(&mut self, config_string: &CStr) {
         unsafe {
             kahypar_configure_context_from_string(self.context.as_ptr(), config_string.as_ptr())
         }
@@ -61,6 +62,20 @@ impl Drop for KaHyParContext {
             kahypar_context_free(self.context.as_ptr());
         }
     }
+}
+
+#[macro_export]
+macro_rules! include_cstr {
+    ( $path:literal $(,)? ) => {{
+        // Use a constant to force the verification to run at compile time.
+        const VALUE: &'static ::core::ffi::CStr = match ::core::ffi::CStr::from_bytes_with_nul(
+            concat!(include_str!($path), "\0").as_bytes(),
+        ) {
+            Ok(value) => value,
+            Err(_) => panic!(concat!("interior NUL byte(s) in `", $path, "`")),
+        };
+        VALUE
+    }};
 }
 
 impl KaHyParHyperGraph {
@@ -188,6 +203,8 @@ pub fn partition(
 
 #[cfg(test)]
 mod tests {
+    use std::ffi::CString;
+
     use super::*;
 
     #[test]
@@ -209,16 +226,15 @@ mod tests {
                 env!("CARGO_MANIFEST_DIR"),
                 "/tests/km1_kKaHyPar_sea20.ini"
             ))
-            .unwrap(),
+            .unwrap()
+            .as_c_str(),
         );
     }
 
     #[test]
     fn test_context_init_str() {
         let mut context = KaHyParContext::new();
-        context.configure_from_str(
-            CString::new(include_str!("../tests/km1_kKaHyPar_sea20.ini")).unwrap(),
-        );
+        context.configure_from_str(include_cstr!("../tests/km1_kKaHyPar_sea20.ini"));
     }
 
     #[test]
@@ -249,7 +265,8 @@ mod tests {
                 env!("CARGO_MANIFEST_DIR"),
                 "/tests/km1_kKaHyPar_sea20.ini"
             ))
-            .unwrap(),
+            .unwrap()
+            .as_c_str(),
         );
         let num_vertices = 7;
         let num_hyperedges = 4;
