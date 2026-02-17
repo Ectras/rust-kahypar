@@ -15,6 +15,10 @@ fn main() {
     println!("cargo:rustc-link-lib=kahypar");
     println!("cargo:rustc-link-lib=boost_program_options");
 
+    if let Ok(boost_dir) = env::var("BOOST_DIR") {
+        println!("cargo:rustc-link-search={boost_dir}/lib");
+    }
+
     // Link the C++ standard library
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=dylib=stdc++");
