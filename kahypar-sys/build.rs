@@ -14,7 +14,13 @@ fn main() {
     println!("cargo:rustc-link-search={}", dst.join("lib64").display());
     println!("cargo:rustc-link-lib=kahypar");
     println!("cargo:rustc-link-lib=boost_program_options");
-    println!("cargo:rustc-link-lib=stdc++");
+
+    // Link the C++ standard library
+    if cfg!(target_os = "linux") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+    } else if cfg!(target_os = "macos") {
+        println!("cargo:rustc-link-lib=dylib=c++");
+    }
 
     // Generate bindings
     let header = "extern/kahypar/include/libkahypar.h";
