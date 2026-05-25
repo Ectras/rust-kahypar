@@ -19,13 +19,6 @@ fn main() {
         println!("cargo:rustc-link-search={boost_dir}/lib");
     }
 
-    // Link the C++ standard library
-    if cfg!(target_os = "linux") {
-        println!("cargo:rustc-link-lib=dylib=stdc++");
-    } else if cfg!(target_os = "macos") {
-        println!("cargo:rustc-link-lib=dylib=c++");
-    }
-
     // Generate bindings
     let header = "extern/kahypar/include/libkahypar.h";
     println!("cargo:rerun-if-changed={header}");
