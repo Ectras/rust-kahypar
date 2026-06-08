@@ -5,7 +5,7 @@ fn main() {
     // Build kahypar
     let dst = Config::new("extern/kahypar")
         .configure_arg("-DBUILD_TESTING=False")
-        .configure_arg("-DBUILD_SHARED_LIBS=False")
+        .configure_arg("-DSTATICCOMPILE=True")
         .profile("Release")
         .build();
 
